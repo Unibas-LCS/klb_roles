@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+'''This script reads the homeDirectory from AD'''
+
+__author__ = "Jan Welker"
+__email__ = "jan.welker@unibas.ch"
+__copyright__ = "Copyright 2019, University of Basel"
+
+__credits__ = ["Jan Welker", "Basil Neff"]
+__license__ = "GPL"
+
+
+from os import listdir, environ
+from sys import argv, stderr
+from pwd import getpwnam
+from ssl import CERT_REQUIRED
+from ldap3 import Server, Connection, Tls, SASL, ServerPool, RANDOM
+from dns import resolver
+
+DIRECTORY = argv[1]
+
+UID = getpwnam(DIRECTORY).pw_name
+NUID = getpwnam(DIRECTORY).pw_uid
+NGID = getpwnam(DIRECTORY).pw_gid
+
+AD_DOMAIN = 'unibasel.ads.unibas.ch'
+AD_PORT = 636
+DNS_RESULTS = resolver.resolve(AD_DOMAIN, 'NS')
+LDAP_BASE = 'DC=unibasel,DC=ads,DC=unibas,DC=ch'
+LDAP_QUERY = ("(uid=%s)" % UID)
+LDAP_FILTER = ['homeDirectory']
+FSTYPE = 'cifs'
+SEC = 'krb5'
+FILE_MODE = '0600'
+DIR_MODE = '0700'
+OTHER = 'nounix,noserverino,vers=2.1'
+CC_DIR = '/tmp'
+
+for FILES in listdir(CC_DIR):
+    if FILES.startswith('krb5cc_%s' % NUID):
+        CCACHE = '%s/%s' % (CC_DIR, FILES)
+
+environ['KRB5CCNAME'] = CCACHE
+
+AUFS_PARMS = '-fstype=%s,sec=%s,user=%s,uid=%s,gid=%s,cruid=%s,'\
+             'file_mode=%s,dir_mode=%s,%s' % (FSTYPE,
+                                              SEC,
+                                              UID,
+                                              NUID,
+                                              NGID,
+                                              NUID,
+                                              FILE_MODE,
+                                              DIR_MODE,
+                                              OTHER)
+
+LDAP_HOSTS = []
+for DNS_RESULT in DNS_RESULTS:
+    LDAP_HOSTS.append(str(DNS_RESULT).rstrip('.'))
+
+TLS = Tls(validate=CERT_REQUIRED)
+SERVER_POOL = ServerPool(None, RANDOM, active=True, exhaust=True)
+
+for LDAP_HOST in LDAP_HOSTS:
+    SERVER_POOL.add(Server(LDAP_HOST, use_ssl=True, tls=TLS,
+                           connect_timeout=1, port=AD_PORT))
+CONNECTION = Connection(SERVER_POOL, authentication=SASL,
+                        sasl_mechanism='GSSAPI')
+
+try:
+    CONNECTION.bind()
+except Exception as ex:
+    stderr.write('%s \n' % ex.message)
+    exit()
+
+CONNECTION.search(LDAP_BASE, LDAP_QUERY, attributes=LDAP_FILTER)
+
+for LDAP_RESULT in CONNECTION.entries:
+    try:
+        if LDAP_RESULT.homeDirectory:
+            homeDirectory = str(LDAP_RESULT.homeDirectory)
+            homeDirectory = homeDirectory.replace('\\', '/')
+            homeDirectory = homeDirectory.replace('$', '\$')
+    except Exception as ex:
+        stderr.write('%s \n' % ex.message)
+        exit()
+
+print( '%s :%s' % (AUFS_PARMS, homeDirectory))

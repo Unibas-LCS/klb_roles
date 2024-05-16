@@ -1,0 +1,4 @@
+modules -fstype=nfs,soft,intr,nfsvers=3 urz-campus.storage.p.unibas.ch:/lcs-software/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/generic/&
+software -fstype=nfs,soft,intr,nfsvers=3 urz-campus.storage.p.unibas.ch:/lcs-software/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/generic/&
+src -fstype=nfs,soft,intr,nfsvers=3 urz-campus.storage.p.unibas.ch:/lcs-software/&
+LinxInventoryAgent  -fstype=nfs,soft,intr,nfsvers=3 urz-campus.storage.p.unibas.ch:/lcs-software/{{ ansible_distribution | lower }}{{ ansible_distribution_major_version }}/&

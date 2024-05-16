@@ -1,0 +1,12 @@
+export MANPATH=":$MANPATH"
+shell=`/bin/basename $(/bin/readlink /proc/$$/exe)`
+
+if [ -f /scicore/soft/lua_lmod/centos7/lmod/lmod/init/$shell ]
+then
+    export PATH=/scicore/soft/lua_lmod/centos7/lmod/lmod/libexec:$PATH
+    . /scicore/soft/lua_lmod/centos7/lmod/lmod/init/$shell
+    export LMOD_DISABLE_SAME_NAME_AUTOSWAP=yes
+    export LMOD_SITE_MSG_FILE=/scicore/soft/lua_lmod/centos7/lmod/lmod/../etc/scicore_site_msgs.lua
+
+    export MODULEPATH="/scicore/soft/modules/bio:/scicore/soft/modules/chem:/scicore/soft/modules/compiler:/scicore/soft/modules/data:/scicore/soft/modules/devel:/scicore/soft/modules/lang:/scicore/soft/modules/lang:/scicore/soft/modules/lib:/scicore/soft/modules/math:/scicore/soft/modules/mpi:/scicore/soft/modules/numlib:/scicore/soft/modules/perf:/scicore/soft/modules/phys:/scicore/soft/modules/system:/scicore/soft/modules/toolchain:/scicore/soft/modules/tools:/scicore/soft/modules/vis"
+fi

@@ -1,0 +1,8 @@
+/misc   /etc/auto.misc
+/net    -hosts
++dir:/etc/auto.master.d
++auto.master
+
+{% for mount in klb_autmount.automount_mounts %}
+{{ mount.mountpoint }} /etc/{{ mount.file }}
+{% endfor %}

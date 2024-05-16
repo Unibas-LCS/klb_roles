@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+
+'''This script reads the Group share from AD'''
+
+__author__ = "Jan Welker"
+__email__ = "jan.welker@unibas.ch"
+__copyright__ = "Copyright 2019, University of Basel"
+
+__credits__ = ["Jan Welker", "Basil Neff"]
+__license__ = "GPL"
+
+
+from os import listdir, environ
+from sys import argv
+from pwd import getpwnam
+from dns import resolver
+
+DIRECTORY = argv[1]
+
+UID = getpwnam(DIRECTORY).pw_name
+NUID = getpwnam(DIRECTORY).pw_uid
+NGID = getpwnam(DIRECTORY).pw_gid
+
+AD_DOMAIN = 'unibasel.ads.unibas.ch'
+DNS_RESULTS = resolver.resolve(AD_DOMAIN, 'NS')
+PATH = '//biopz-moby.bioz.unibas.ch/day\\$'
+FSTYPE = 'cifs'
+SEC = 'krb5'
+FILE_MODE = '0600'
+DIR_MODE = '0700'
+OTHER = 'nounix,noserverino,vers=2.1'
+CC_DIR = '/tmp'
+
+for FILES in listdir(CC_DIR):
+    if FILES.startswith('krb5cc_%s' % NUID):
+        CCACHE = '%s/%s' % (CC_DIR, FILES)
+
+environ['KRB5CCNAME'] = CCACHE
+
+AUFS_PARMS = '-fstype=%s,sec=%s,user=%s,uid=%s,gid=%s,cruid=%s,'\
+             'file_mode=%s,dir_mode=%s,%s' % (FSTYPE,
+                                              SEC,
+                                              UID,
+                                              NUID,
+                                              NGID,
+                                              NUID,
+                                              FILE_MODE,
+                                              DIR_MODE,
+                                              OTHER)
+
+print( '%s :%s' % (AUFS_PARMS, PATH))

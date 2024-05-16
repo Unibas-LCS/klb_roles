@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalProtect>
+	<Settings>
+		<LastUrl>vpn.unibas.ch</LastUrl>
+	</Settings>
+	<PanMSAgent>
+		<DebugLevel>5</DebugLevel>
+		<CDLLog>0</CDLLog>
+		<Service.DebugLevel>5</Service.DebugLevel>
+	</PanMSAgent>
+</GlobalProtect>
