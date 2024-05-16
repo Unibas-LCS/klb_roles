@@ -6,3 +6,6 @@
 {% for mount in klb_autmount.automount_mounts %}
 {{ mount.mountpoint }} /etc/{{ mount.file }}
 {% endfor %}
+{% if klb_automount.struct == True %}
+/struct /etc/auto.struct
+{% endif %}
