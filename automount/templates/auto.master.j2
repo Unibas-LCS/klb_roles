@@ -3,7 +3,7 @@
 +dir:/etc/auto.master.d
 +auto.master
 
-{% for mount in klb_autmount.automount_mounts %}
+{% for mount in klb_automount.automount_mounts %}
 {{ mount.mountpoint }} /etc/{{ mount.file }}
 {% endfor %}
 {% if klb_automount.struct == True %}

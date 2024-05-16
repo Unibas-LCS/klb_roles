@@ -1,5 +1,5 @@
 ---
-  klb_autmount:
+  klb_automount:
     automount_mounts:
     - {mountpoint: '/unibas/home', file: 'auto.home.py', mode: '0755'}
     - {mountpoint: '/unibas/group', file: 'auto.group.py', mode: '0755'}
@@ -8,5 +8,4 @@
     - {mountpoint: '/scicore/soft', file: 'auto.scicore-software', mode: '0644'}
     - {mountpoint: '/scicore/projects', file: 'auto.scicore-projects', mode: '0644'}
     - {mountpoint: '/unibas/vamp', file: 'auto.vamp.py', mode: '0755'}
-    imcf: False
     struct: False
