@@ -1,8 +1,16 @@
 ---
   - name: Installing autofs home and group dependencies
     apt:
-      name: autofs, python3-ldap3, python3-gssapi
+      name: autofs, python3-ldap3, python3-gssapi, autofs-ldap
       state: present
+
+  - name: Creating Kerberos configuration
+    template:
+      src: "krb5.conf.j2"
+      dest: "/etc/krb5.conf"
+      mode: 0644
+      owner: root
+      group: root
 
   - name: Setting autofs timeout
     lineinfile:

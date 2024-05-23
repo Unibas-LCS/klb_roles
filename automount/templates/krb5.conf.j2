@@ -1,0 +1,28 @@
+includedir /var/lib/sss/pubconf/krb5.include.d/
+[libdefaults]
+ default_realm = UNIBASEL.ADS.UNIBAS.CH
+ dns_lookup_realm = true
+ dns_lookup_kdc = true
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ rdns = false
+ forwardable = yes
+[realms]
+ UNIBASEL.ADS.UNIBAS.CH = {
+  kdc = its-cup-kh-1.unibasel.ads.unibas.ch
+  kdc = its-cup-core-1.unibasel.ads.unibas.ch
+  kdc = its-cup-ebm-1.unibasel.ads.unibas.ch
+  kdc = its-cuv-core-1.unibasel.ads.unibas.ch
+ }
+
+[domain_realm]
+ unibasel.ads.unibas.ch = UNIBASEL.ADS.UNIBAS.CH
+  its-cup-kh-1.unibasel.ads.unibas.ch= UNIBASEL.ADS.UNIBAS.CH
+  its-cup-core-1.unibasel.ads.unibas.ch= UNIBASEL.ADS.UNIBAS.CH
+  its-cup-ebm-1.unibasel.ads.unibas.ch= UNIBASEL.ADS.UNIBAS.CH
+  its-cuv-core-1.unibasel.ads.unibas.ch= UNIBASEL.ADS.UNIBAS.CH
+ .unibas.ch = UNIBASEL.ADS.UNIBAS.CH
+
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
