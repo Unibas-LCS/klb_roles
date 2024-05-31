@@ -34,7 +34,7 @@
 
 - name: "Install default packages."
   apt:
-    name: "{{ defaultsoftware }}"
+    name: "{{ klb_defaultsoftware.apt }}"
     state: "present"
     update_cache: yes
 
