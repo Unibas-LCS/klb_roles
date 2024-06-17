@@ -1,0 +1,9 @@
+---
+- name: Remove old Ansible files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/cron.d/ansible
+    - /root/ansible_cron.sh
+    - /root/.ansible_playbook
