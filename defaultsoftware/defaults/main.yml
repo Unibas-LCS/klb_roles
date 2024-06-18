@@ -1,27 +1,29 @@
 ---
-defaultsoftware:
-  - git
-  - ansible
-  - vim
-  - unattended-upgrades
-  - libglib2.0-dev-bin
-  - cups
-  - apt-transport-https
-  - ca-certificates
-  - software-properties-common
-  - sublime-text
-  - gimp
-  - vlc
-  - docker-ce
-  - docker-ce-cli 
-  - containerd.io 
-  - docker-buildx-plugin 
-  - docker-compose-plugin
-  - sshfs
-  - doxygen
-  - htop
-  - freerdp2-x11
-  - pymol
-  - default-jre
-  - cifs-utils
-  - code
+klb_defaultsoftware:
+  apt: 
+    - git
+    - ansible
+    - vim
+    - unattended-upgrades
+    - libglib2.0-dev-bin
+    - cups
+    - apt-transport-https
+    - ca-certificates
+    - software-properties-common
+    - sublime-text
+    - gimp
+    - vlc
+    - docker-ce
+    - docker-ce-cli 
+    - containerd.io
+    - docker-buildx-plugin 
+    - docker-compose-plugin
+    - sshfs
+    - doxygen
+    - htop
+    - freerdp2-x11
+    - pymol
+    - default-jre
+    - cifs-utils
+    - code
+    - google-chrome-stable
