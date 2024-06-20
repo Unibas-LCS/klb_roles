@@ -26,4 +26,3 @@ klb_defaultsoftware:
     - default-jre
     - cifs-utils
     - code
-    - google-chrome-stable
