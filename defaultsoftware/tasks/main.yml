@@ -32,12 +32,6 @@
     state: present
     filename: vscode
 
-- name: Add Google Chrome Repo
-  apt_repository:
-    repo: "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main"
-    state: present
-    filename: google-chrome
-
 - name: "Install default packages."
   apt:
     name: "{{ defaultsoftware }}"
