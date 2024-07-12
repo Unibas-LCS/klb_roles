@@ -23,7 +23,7 @@
 
 - name: Remove old Docker repository
   apt_repository:
-    repo: "deb https://download.docker.com/linux/ubuntu jammy stable"
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
     state: absent
     filename: docker
 
