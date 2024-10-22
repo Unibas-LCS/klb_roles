@@ -89,15 +89,6 @@
   - name: Adds shares to the bookmarks of Nautilus
     lineinfile:
       dest: /home/{{ item }}/.config/gtk-3.0/bookmarks
-      line: "smb://unibasel.ads.unibas.ch/{{ ansible_hostname.split('-')[0] }} Unibas Share"
+      line: "smb://unibasel.ads.unibas.ch/{{ lccms.department }}/ Unibas Share"
     loop: "{{ home_dirs.stdout_lines }}"
-    when: ansible_hostname.split('-')[0] != "itsc"
-    ignore_errors: True
-
-  - name: Adds shares to the bookmarks of Nautilus
-    lineinfile:
-      dest: /home/{{ item }}/.config/gtk-3.0/bookmarks
-      line: "smb://unibasel.ads.unibas.ch/itscklb Unibas Share"
-    loop: "{{ home_dirs.stdout_lines }}"
-    when: ansible_hostname.split('-')[0] == "itsc"
     ignore_errors: True
