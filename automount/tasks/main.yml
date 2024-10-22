@@ -81,6 +81,6 @@
 - name: Adds shares to the bookmarks of Nautilus
   lineinfile:
     dest: /home/{{ item }}/.config/gtk-3.0/bookmarks
-    line: "smb://unibasel.ads.unibas.ch/{{ lccms.department }} Unibas Share"
+    line: "smb://unibasel.ads.unibas.ch/{{ lccms.department }}/ Unibas Share"
   loop: "{{ home_dirs.stdout_lines }}"
   ignore_errors: True
