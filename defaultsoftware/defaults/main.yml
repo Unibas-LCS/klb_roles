@@ -28,3 +28,4 @@ klb_defaultsoftware:
     - code
     - xclip
     - xrdp
+    - tmux
