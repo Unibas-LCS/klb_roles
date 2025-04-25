@@ -1,7 +1,7 @@
 ---
   - name: Installing autofs home and group dependencies
     apt:
-      name: autofs, python3-ldap3, python3-gssapi, autofs-ldap
+      name: autofs, python3-ldap3, python3-gssapi, autofs-ldap, lua5.3, lua-posix, lua-term, lua-filesystem
       state: present
 
   - name: Creating Kerberos configuration
@@ -40,13 +40,18 @@
     notify:
     - restart autofs
 
-  - name: Installing Softwaretree Lmod environment
+  - name: Installing SciCORE Stack
     template:
-      src: lmod-modules.sh.j2
-      dest: /etc/profile.d/lmod-modules.sh
+      src: scicore-stack.sh.j2
+      dest: /etc/profile.d/scicore-stack.sh
       mode: '0755'
       owner: root
       group: root
+
+  - name: Remove old lmod stack
+    file:
+      path: /etc/profile.d/lmod-modules.sh
+      state: absent
 
   - name: Install Auto mount files for struct
     template:
