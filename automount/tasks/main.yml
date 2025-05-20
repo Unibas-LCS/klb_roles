@@ -4,41 +4,41 @@
     name: autofs, python3-ldap3, python3-gssapi, autofs-ldap, lua5.3, lua-posix, lua-term, lua-filesystem
     state: present
 
-  - name: Creating Kerberos configuration
-    template:
-      src: "krb5.conf.j2"
-      dest: "/etc/krb5.conf"
-      mode: 0644
-      owner: root
-      group: root
+- name: Creating Kerberos configuration
+  template:
+    src: "krb5.conf.j2"
+    dest: "/etc/krb5.conf"
+    mode: 0644
+    owner: root
+    group: root
 
-  - name: Setting autofs timeout
-    lineinfile:
-      dest: /etc/autofs.conf
-      regexp: '^timeout'
-      line: 'timeout = 10'
-    notify:
-    - restart autofs
+- name: Setting autofs timeout
+  lineinfile:
+    dest: /etc/autofs.conf
+    regexp: '^timeout'
+    line: 'timeout = 10'
+  notify:
+  - restart autofs
 
-  - name: Enabling Mounts in Auto Master
-    template:
-      src: auto.master.j2
-      dest: /etc/auto.master
-      owner: root
-      group: root
-    notify:
-    - restart autofs
+- name: Enabling Mounts in Auto Master
+  template:
+    src: auto.master.j2
+    dest: /etc/auto.master
+    owner: root
+    group: root
+  notify:
+  - restart autofs
 
-  - name: Installing Auto mount files
-    template:
-      src: '{{ item.file }}.j2'
-      dest: /etc/{{ item.file}}
-      mode: '{{ item.mode }}'
-      owner: root
-      group: root
-    with_items: '{{ klb_automount.automount_mounts }}'
-    notify:
-    - restart autofs
+- name: Installing Auto mount files
+  template:
+    src: '{{ item.file }}.j2'
+    dest: /etc/{{ item.file}}
+    mode: '{{ item.mode }}'
+    owner: root
+    group: root
+  with_items: '{{ klb_automount.automount_mounts }}'
+  notify:
+  - restart autofs
 
 - name: Installing SciCORE Stack
   template:
@@ -68,32 +68,32 @@
 
 # Directories are only mounted when accessed by a user
 # Therefore, we use force: yes
-  - name: Set symlinks for struct directories
-    file:
-      src: "{{ item.src }}"
-      dest: "{{ item.dest }}"
-      state: link
-      force: yes
-    with_items:
-      - { src: '/struct/bzsh01/users', dest: '/nmrh' }
-      - { src: '/struct/bzts02/users', dest: '/xray' }
-    when: klb_automount.struct == True
+- name: Set symlinks for struct directories
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+  with_items:
+    - { src: '/struct/bzsh01/users', dest: '/nmrh' }
+    - { src: '/struct/bzts02/users', dest: '/xray' }
+  when: klb_automount.struct == True
 
-  - name: ensure autofs has been enabled
-    service:
-      name: autofs
-      enabled: yes
-      state: started
-  
-  - name: Retrieve the list of home directories
-    ansible.builtin.command: 
-      cmd: ls /home
-    changed_when: False
-    register: home_dirs
+- name: ensure autofs has been enabled
+  service:
+    name: autofs
+    enabled: yes
+    state: started
 
-  - name: Adds shares to the bookmarks of Nautilus
-    lineinfile:
-      dest: /home/{{ item }}/.config/gtk-3.0/bookmarks
-      line: "smb://unibasel.ads.unibas.ch/{{ lccms.department }}/ Unibas Share"
-    loop: "{{ home_dirs.stdout_lines }}"
-    ignore_errors: True
+- name: Retrieve the list of home directories
+  ansible.builtin.command: 
+    cmd: ls /home
+  changed_when: False
+  register: home_dirs
+
+- name: Adds shares to the bookmarks of Nautilus
+  lineinfile:
+    dest: /home/{{ item }}/.config/gtk-3.0/bookmarks
+    line: "smb://unibasel.ads.unibas.ch/{{ lccms.department }}/ Unibas Share"
+  loop: "{{ home_dirs.stdout_lines }}"
+  ignore_errors: True
