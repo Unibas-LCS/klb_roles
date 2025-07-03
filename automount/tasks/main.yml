@@ -75,8 +75,8 @@
     state: link
     force: yes
   with_items:
-    - { src: '/struct/bzsh01/users', dest: '/nmrh' }
-    - { src: '/struct/bzts02/users', dest: '/xray' }
+    - { src: '/unibas/struct/bzsh01/users', dest: '/nmrh' }
+    - { src: '/unibas/struct/bzts02/users', dest: '/xray' }
   when: klb_automount.struct == True
 
 - name: ensure autofs has been enabled
