@@ -1,56 +1,69 @@
 ---
-- name: Import the GPG key for Sublime Text
-  get_url:
-    url: https://download.sublimetext.com/sublimehq-pub.gpg
-    dest: /etc/apt/keyrings/sublimehq-pub.asc
+- block:
+  - name: Import the GPG key for Sublime Text
+    get_url:
+      url: https://download.sublimetext.com/sublimehq-pub.gpg
+      dest: /etc/apt/keyrings/sublimehq-pub.asc
 
-- name: Add Sublime Text repository
-  apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/sublimehq-pub.asc] https://download.sublimetext.com/ apt/stable/"
-    state: present
-    filename: sublime-text
+  - name: Add Sublime Text repository
+    deb822_repository:
+      name: sublime-text
+      types: deb
+      uris: https://download.sublimetext.com/
+      suites: apt/stable/
+      signed_by: /etc/apt/keyrings/sublimehq-pub.asc
 
-- name: Add Docker GPG key
-  get_url:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    dest: /etc/apt/keyrings/docker.asc
+  - name: Add Docker GPG key
+    get_url:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      dest: /etc/apt/keyrings/docker.asc
 
-- name: Add Docker repository
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable"
-    state: present
-    filename: docker
+  - name: Add Docker repository
+    deb822_repository:
+      name: docker
+      types: deb
+      uris: https://download.docker.com/linux/ubuntu
+      suites: noble
+      components: stable
+      architectures: amd64
+      signed_by: /etc/apt/keyrings/docker.asc
 
-- name: Add VS Code Asc Key
-  ansible.builtin.get_url:
-    url: https://packages.microsoft.com/keys/microsoft.asc
-    dest: /etc/apt/keyrings/packages.microsoft.asc
+  - name: Add VS Code Asc Key
+    ansible.builtin.get_url:
+      url: https://packages.microsoft.com/keys/microsoft.asc
+      dest: /etc/apt/keyrings/packages.microsoft.asc
 
-- name: Add VS Code Repo
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.asc] https://packages.microsoft.com/repos/code stable main"
-    state: present
-    filename: vscode
+  - name: Add VS Code Repo
+    deb822_repository:
+      name: vscode
+      types: deb
+      uris: https://packages.microsoft.com/repos/code
+      suites: stable
+      components: main
+      architectures: amd64,arm64,armhf
+      signed_by: /etc/apt/keyrings/packages.microsoft.asc
 
-- name: "Install default packages."
-  apt:
-    name: "{{ klb_defaultsoftware.apt }}"
-    state: "present"
-    update_cache: yes
+  - name: "Install default packages."
+    apt:
+      name: "{{ klb_defaultsoftware.apt }}"
+      state: "present"
+      update_cache: yes
 
-- name: Install Zoom
-  apt:
-    deb: https://zoom.us/client/latest/zoom_amd64.deb
-    state: present
+  - name: "Add automatic updates for VS Code to /etc/apt/apt.conf.d/50unattended-upgrades."
+    ansible.builtin.lineinfile:
+      path: /etc/apt/apt.conf.d/50unattended-upgrades
+      line: '        "code stable:stable";'
+      insertafter: 'Unattended-Upgrade::Allowed-Origins {'
 
-- name: "Add automatic updates for VS Code to /etc/apt/apt.conf.d/50unattended-upgrades."
-  ansible.builtin.lineinfile:
-    path: /etc/apt/apt.conf.d/50unattended-upgrades
-    line: '        "code stable:stable";'
-    insertafter: 'Unattended-Upgrade::Allowed-Origins {'
+  - name: "Add automatic updates for Docker to /etc/apt/apt.conf.d/50unattended-upgrades."
+    ansible.builtin.lineinfile:
+      path: /etc/apt/apt.conf.d/50unattended-upgrades
+      line: '        "Docker:${distro_codename}";'
+      insertafter: 'Unattended-Upgrade::Allowed-Origins {'
 
-- name: "Add automatic updates for Docker to /etc/apt/apt.conf.d/50unattended-upgrades."
-  ansible.builtin.lineinfile:
-    path: /etc/apt/apt.conf.d/50unattended-upgrades
-    line: '        "Docker:${distro_codename}";'
-    insertafter: 'Unattended-Upgrade::Allowed-Origins {'
+  - name: "Add automatic updates for Sublime Text to /etc/apt/apt.conf.d/50unattended-upgrades."
+    ansible.builtin.lineinfile:
+      path: /etc/apt/apt.conf.d/50unattended-upgrades
+      line: '        "Sublime Text:apt/stable";'
+      insertafter: 'Unattended-Upgrade::Allowed-Origins {'
+  when: global_network_available | default(false)
